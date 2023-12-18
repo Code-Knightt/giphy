@@ -1,5 +1,7 @@
 import { GIF } from "@/interfaces/gif.interface";
 import Tile from "./Tile";
+import { useLoading } from "@/providers/SearchProvider";
+import Loader from "./Loader";
 
 interface GifGridProps {
   gifs: GIF[];
@@ -7,8 +9,15 @@ interface GifGridProps {
 
 export default function GifGrid({ gifs }: GifGridProps) {
   console.log(gifs);
+
+  const isLoading = useLoading();
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
-    <div className="grid grid-cols-1 my-4 sm:grid-cols-2 md:grid-cols-3 gap-3">
+    <div className="grid grid-cols-1 my-4 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-3">
       {gifs.map((gif: any) => {
         const shortGif: GIF = {
           id: gif.id,

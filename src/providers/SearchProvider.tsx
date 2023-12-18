@@ -16,6 +16,7 @@ const SearchDispatchContext = createContext<Dispatch<string> | null>(null);
 const PageContext = createContext<number>(1);
 const PageDispatchContext = createContext<Dispatch<number> | null>(null);
 const MaxPageContext = createContext<number>(1);
+const LoadingContext = createContext<boolean>(false);
 
 export const useSearch = () => {
   return useContext(SearchContext);
@@ -37,12 +38,17 @@ export const useMaxPage = () => {
   return useContext(MaxPageContext);
 };
 
+export const useLoading = () => {
+  return useContext(LoadingContext);
+};
+
 export default function SearchProvider({ children }: React.PropsWithChildren) {
   const params = useSearchParams();
   const router = useRouter();
   const [query, setQuery] = useState<string>(params.get("q") || "");
   const [page, setPage] = useState<number>(Number(params.get("page")) || 1);
   const [maxPage, setMaxPage] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const setGifs = useGifDispatch();
 
@@ -61,6 +67,7 @@ export default function SearchProvider({ children }: React.PropsWithChildren) {
   useEffect(() => {
     const timeout = setTimeout(async () => {
       let data = [];
+      setLoading(true);
       if (query.trim().length === 0) {
         data = await getTrending(page, setMaxPage);
       } else {
@@ -68,6 +75,7 @@ export default function SearchProvider({ children }: React.PropsWithChildren) {
       }
 
       if (setGifs) setGifs(data.data);
+      setLoading(false);
     }, 1000);
 
     return () => clearTimeout(timeout);
@@ -83,7 +91,9 @@ export default function SearchProvider({ children }: React.PropsWithChildren) {
         <PageContext.Provider value={page}>
           <PageDispatchContext.Provider value={setPage}>
             <MaxPageContext.Provider value={maxPage}>
-              {children}
+              <LoadingContext.Provider value={loading}>
+                {children}
+              </LoadingContext.Provider>
             </MaxPageContext.Provider>
           </PageDispatchContext.Provider>
         </PageContext.Provider>
