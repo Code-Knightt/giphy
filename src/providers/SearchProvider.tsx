@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 import { useGifDispatch } from "./GifProvider";
-import { LIMIT } from "@/lib/constants";
+import { getSearchResults, getTrending } from "@/lib/requests";
 
 const SearchContext = createContext<string>("");
 const SearchDispatchContext = createContext<Dispatch<string> | null>(null);
@@ -21,20 +21,6 @@ export const useSearch = () => {
 export const useSearchDispatch = () => {
   return useContext(SearchDispatchContext);
 };
-
-async function getSearchResults(query: string) {
-  const data = await fetch(
-    `https://api.giphy.com/v1/gifs/search?api_key=${process.env.NEXT_PUBLIC_API_KEY}&q=${query}&limit=${LIMIT}`
-  ).then((res) => res.json());
-  return data;
-}
-
-async function getTrending() {
-  const data = await fetch(
-    `https://api.giphy.com/v1/gifs/trending?api_key=${process.env.NEXT_PUBLIC_API_KEY}&limit=${LIMIT}`
-  ).then((res) => res.json());
-  return data;
-}
 
 export default function SearchProvider({ children }: React.PropsWithChildren) {
   const params = useSearchParams();
