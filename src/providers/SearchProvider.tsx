@@ -1,5 +1,5 @@
 "use client";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import {
   Dispatch,
@@ -44,6 +44,7 @@ export const useLoading = () => {
 
 export default function SearchProvider({ children }: React.PropsWithChildren) {
   const params = useSearchParams();
+  const path = usePathname();
   const router = useRouter();
   const [query, setQuery] = useState<string>(params.get("q") || "");
   const [page, setPage] = useState<number>(Number(params.get("page")) || 1);
@@ -55,6 +56,10 @@ export default function SearchProvider({ children }: React.PropsWithChildren) {
   //Hot reloading
   useEffect(() => {
     const timeout = setTimeout(async () => {
+      if (path.split("?")[0] !== "/") {
+        return;
+      }
+
       const urlParams = new URLSearchParams(params);
       urlParams.set("q", query);
       urlParams.set("page", String(page));
@@ -62,7 +67,7 @@ export default function SearchProvider({ children }: React.PropsWithChildren) {
     }, 1000);
 
     return () => clearTimeout(timeout);
-  }, [query, params, router, page]);
+  }, [query, router, page]);
 
   useEffect(() => {
     const timeout = setTimeout(async () => {
