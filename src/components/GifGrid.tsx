@@ -8,10 +8,7 @@ interface GifGridProps {
 }
 
 export default function GifGrid({ gifs }: GifGridProps) {
-  console.log(gifs);
-
   const isLoading = useLoading();
-
   if (isLoading) {
     return <Loader />;
   }
