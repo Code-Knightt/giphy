@@ -9,6 +9,11 @@ interface GifGridProps {
 
 export default function GifGrid({ gifs }: GifGridProps) {
   const isLoading = useLoading();
+
+  const user = document.cookie
+    .split(";")
+    .filter((el) => el.trim().startsWith("user"))[0];
+
   if (isLoading) {
     return <Loader />;
   }
@@ -28,7 +33,9 @@ export default function GifGrid({ gifs }: GifGridProps) {
               : "vertical",
         };
 
-        return <Tile key={gif.id} gif={shortGif} />;
+        return (
+          <Tile key={gif.id} gif={shortGif} hasUser={user !== undefined} />
+        );
       })}
     </div>
   );

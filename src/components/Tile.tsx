@@ -3,9 +3,10 @@ import { FaRegStar } from "react-icons/fa6";
 
 interface TileProps {
   gif: GIF;
+  hasUser: boolean;
 }
 
-export default function Tile({ gif }: TileProps) {
+export default function Tile({ gif, hasUser }: TileProps) {
   const title = gif.title.split("GIF")[0].trim();
 
   return (
@@ -30,11 +31,13 @@ export default function Tile({ gif }: TileProps) {
             </p>
           )}
         </div>
-        <FaRegStar
-          size="1.5em"
-          color="gold"
-          className="cursor-pointer hover:scale-125 transition-all"
-        />
+        {hasUser && (
+          <FaRegStar
+            size="1.5em"
+            color="gold"
+            className="cursor-pointer hover:scale-125 transition-all "
+          />
+        )}
       </div>
     </div>
   );
