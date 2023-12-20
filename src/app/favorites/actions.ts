@@ -37,8 +37,6 @@ export async function toggleFavorite(
     if (index > -1) {
       favorites.splice(index, 1);
     }
-  } else {
-    favorites = [...favorites, gif];
   }
 
   cookies().set("user", JSON.stringify({ ...user, favorites }));
