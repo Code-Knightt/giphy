@@ -23,13 +23,14 @@ export default function Header() {
         GIPHY
       </Link>
       <div className="flex items-center gap-4">
-        <p
+        <Link
+          href={"/favorites"}
           className={`cursor-pointer ${
             !user && "opacity-40 pointer-events-none"
           }`}
         >
           Favorites
-        </p>
+        </Link>
         {user ? (
           <SignOutButton handleSignOut={handleSignOut} />
         ) : (
