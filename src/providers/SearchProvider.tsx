@@ -10,6 +10,7 @@ import {
 } from "react";
 import { useGifDispatch } from "./GifProvider";
 import { getSearchResults, getTrending } from "@/lib/requests";
+import { LIMIT } from "@/lib/constants";
 
 const SearchContext = createContext<string>("");
 const SearchDispatchContext = createContext<Dispatch<string> | null>(null);
@@ -69,16 +70,18 @@ export default function SearchProvider({ children }: React.PropsWithChildren) {
     return () => clearTimeout(timeout);
   }, [query, router, page]);
 
+  // Fetch from GIPHY API when search query changes
   useEffect(() => {
     const timeout = setTimeout(async () => {
       let data = [];
       setLoading(true);
       if (query.trim().length === 0) {
-        data = await getTrending(page, setMaxPage);
+        data = await getTrending(page);
       } else {
-        data = await getSearchResults(query, page, setMaxPage);
+        data = await getSearchResults(query, page);
       }
-
+      
+      setMaxPage(Math.ceil(data.pagination.total_count / LIMIT));
       if (setGifs) setGifs(data.data);
       setLoading(false);
     }, 1000);
@@ -86,6 +89,7 @@ export default function SearchProvider({ children }: React.PropsWithChildren) {
     return () => clearTimeout(timeout);
   }, [query, page]);
 
+  // Set Pagination page to 1 when query changes
   useEffect(() => {
     setPage(1);
   }, [query]);
