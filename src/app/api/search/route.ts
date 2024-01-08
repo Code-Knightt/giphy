@@ -12,20 +12,22 @@ export async function POST(Request: NextRequest) {
     }&q=${query}&limit=${LIMIT}&offset=${LIMIT * (page - 1)}`
   ).then((res) => res.json());
 
-  await prisma.search.upsert({
-    where: {
-      keyword: query,
-    },
-    create: {
-      keyword: query,
-      timestamp: [new Date()],
-    },
-    update: {
-      timestamp: {
-        push: new Date(),
+  if (page === 1) {
+    await prisma.search.upsert({
+      where: {
+        keyword: query,
       },
-    },
-  });
+      create: {
+        keyword: query,
+        timestamp: [new Date()],
+      },
+      update: {
+        timestamp: {
+          push: new Date(),
+        },
+      },
+    });
+  }
 
   await prisma.$disconnect();
   return NextResponse.json(data, { status: 200 });
