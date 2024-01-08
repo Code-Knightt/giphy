@@ -19,13 +19,24 @@ export default function FavoriteButton({
 }: FavoriteButtonProps) {
   const [favoriteState, setFavoriteState] = useState(isFavorite);
 
+  const handleFavoriteToggle = async () => {
+    const data = await fetch("/api/favorites", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user,
+        gif,
+        isFavorite,
+      }),
+    }).then((res) => res.json());
+
+    setFavoriteState(!favoriteState);
+  };
+
   return (
-    <div
-      onClick={async () => {
-        await toggleFavorite(isFavorite, user, gif);
-        setFavoriteState(!favoriteState);
-      }}
-    >
+    <div onClick={handleFavoriteToggle}>
       {favoriteState ? (
         <FaStar
           size="1.5em"
