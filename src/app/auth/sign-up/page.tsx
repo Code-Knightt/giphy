@@ -1,17 +1,56 @@
 "use client";
 import Link from "next/link";
-import { FormState, handleSignUp } from "../actions";
-import { useFormState, useFormStatus } from "react-dom";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
+
+interface SignUpInputs extends HTMLFormControlsCollection {
+  name: HTMLInputElement;
+  email: HTMLInputElement;
+  password: HTMLInputElement;
+  confirm: HTMLInputElement;
+}
+
+interface SignUpForm extends HTMLFormElement {
+  readonly elements: SignUpInputs;
+}
 
 export default function SignUp() {
-  const [formState, formAction] = useFormState(handleSignUp, {
-    message: "",
-    error: false,
-  } as FormState);
-  const { pending } = useFormStatus();
+  const [formState, setFormState] = useState<{
+    type?: String;
+    message?: String;
+  }>({});
+  const [pending, setPending] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (e: FormEvent<SignUpForm>) => {
+    e.preventDefault();
+    setPending(true);
+
+    const form = e.currentTarget.elements;
+
+    const data = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: form.name.value,
+        email: form.email.value,
+        password: form.password.value,
+        confirm: form.confirm.value,
+      }),
+    }).then((res) => res.json());
+
+    setFormState({ type: data.type, message: data.message });
+    setPending(false);
+
+    if (data.type === "success") {
+      router.refresh();
+    }
+  };
 
   return (
-    <form className="flex flex-col gap-2" action={formAction}>
+    <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
       <div className="flex justify-between items-center mb-8">
         <h1 className="font-bold text-2xl">Sign Up</h1>
       </div>
@@ -52,8 +91,14 @@ export default function SignUp() {
       >
         {pending ? "Signing Up" : "Sign up"}
       </button>
-      {formState.error && (
-        <p className="text-red-500 text-center">{formState.message}</p>
+      {formState.message?.length !== 0 && (
+        <p
+          className={`${
+            formState.type === "error" ? "text-red-500" : "text-green-500"
+          } text-center`}
+        >
+          {formState.message}
+        </p>
       )}
       <hr className="my-3" />
       <Link href={"/auth/sign-in"} className="m-auto text-gray-400">
