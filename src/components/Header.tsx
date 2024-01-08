@@ -1,18 +1,6 @@
 import Link from "next/link";
 import SignOutButton from "./SignOutButton";
-import { getAuth, signOut } from "firebase/auth";
-import { app } from "@/lib/firebase";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-
-async function handleSignOut() {
-  "use server";
-  await signOut(getAuth(app));
-  cookies().delete("user");
-  revalidatePath("/", "layout");
-  redirect("/");
-}
 
 export default function Header() {
   const user = cookies().get("user");
@@ -32,7 +20,7 @@ export default function Header() {
           Favorites
         </Link>
         {user ? (
-          <SignOutButton handleSignOut={handleSignOut} />
+          <SignOutButton />
         ) : (
           <Link href={"/auth/sign-in"} className="cursor-pointer">
             Sign In
