@@ -35,6 +35,12 @@ export async function POST(Request: NextRequest) {
       });
     }
 
+    await prisma.login.create({
+      data: {
+        userId: user.id,
+      },
+    });
+
     const localUser = {
       id: user.id,
       name: user.name,

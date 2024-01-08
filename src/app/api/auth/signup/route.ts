@@ -30,10 +30,16 @@ export async function POST(Request: NextRequest) {
       favorites: [],
     };
 
-    await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         email,
         name,
+      },
+    });
+
+    await prisma.login.create({
+      data: {
+        userId: user.id,
       },
     });
 
