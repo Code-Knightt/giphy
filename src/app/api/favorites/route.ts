@@ -1,4 +1,3 @@
-import { GIF } from "@/interfaces/gif.interface";
 import { PrismaClient } from "@prisma/client";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
