@@ -13,18 +13,10 @@ export async function POST(Request: NextRequest) {
   ).then((res) => res.json());
 
   if (page === 1) {
-    await prisma.search.upsert({
-      where: {
+    await prisma.search.create({
+      data: {
         keyword: query,
-      },
-      create: {
-        keyword: query,
-        timestamp: [new Date()],
-      },
-      update: {
-        timestamp: {
-          push: new Date(),
-        },
+        timestamp: new Date(),
       },
     });
   }
