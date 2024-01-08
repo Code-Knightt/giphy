@@ -9,7 +9,6 @@ import {
   useState,
 } from "react";
 import { useGifDispatch } from "./GifProvider";
-import { getSearchResults, getTrending } from "@/lib/requests";
 import { LIMIT } from "@/lib/constants";
 
 const SearchContext = createContext<string>("");
@@ -76,11 +75,23 @@ export default function SearchProvider({ children }: React.PropsWithChildren) {
       let data = [];
       setLoading(true);
       if (query.trim().length === 0) {
-        data = await getTrending(page);
+        data = await fetch("/api/trending", {
+          method: "POST",
+          body: JSON.stringify({ page }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }).then((res) => res.json());
       } else {
-        data = await getSearchResults(query, page);
+        data = await fetch("/api/search", {
+          method: "POST",
+          body: JSON.stringify({ page, query }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }).then((res) => res.json());
       }
-      
+
       setMaxPage(Math.ceil(data.pagination.total_count / LIMIT));
       if (setGifs) setGifs(data.data);
       setLoading(false);
