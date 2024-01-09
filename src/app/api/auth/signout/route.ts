@@ -6,5 +6,5 @@ import { NextResponse } from "next/server";
 export async function GET() {
   await signOut(getAuth(app));
   cookies().delete("user");
-  return NextResponse.json({ status: 200 });
+  return NextResponse.json({}, { status: 200 });
 }

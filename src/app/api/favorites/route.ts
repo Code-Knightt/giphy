@@ -7,11 +7,13 @@ export async function POST(Request: NextRequest) {
   const prisma = new PrismaClient();
 
   if (!user) {
-    return NextResponse.json({
-      type: "error",
-      message: "User not found",
-      status: 400,
-    });
+    return NextResponse.json(
+      {
+        type: "error",
+        message: "User not found",
+      },
+      { status: 400 }
+    );
   }
 
   if (!isFavorite) {
@@ -61,11 +63,13 @@ export async function POST(Request: NextRequest) {
   });
 
   if (!userDB) {
-    return NextResponse.json({
-      type: "error",
-      message: "User not found",
-      status: 404,
-    });
+    return NextResponse.json(
+      {
+        type: "error",
+        message: "User not found",
+      },
+      { status: 404 }
+    );
   }
 
   const localUser = {
@@ -78,9 +82,11 @@ export async function POST(Request: NextRequest) {
   cookies().set("user", JSON.stringify(localUser));
   await prisma.$disconnect();
 
-  return NextResponse.json({
-    type: "success",
-    message: "Favorite Toggled",
-    status: 200,
-  });
+  return NextResponse.json(
+    {
+      type: "success",
+      message: "Favorite Toggled",
+    },
+    { status: 200 }
+  );
 }

@@ -28,11 +28,15 @@ export async function POST(Request: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json({
-        type: "error",
-        message: "User not found",
-        status: 404,
-      });
+      return NextResponse.json(
+        {
+          type: "error",
+          message: "User not found",
+        },
+        {
+          status: 404,
+        }
+      );
     }
 
     await prisma.login.create({
@@ -51,16 +55,22 @@ export async function POST(Request: NextRequest) {
     cookies().set("user", JSON.stringify(localUser));
     await prisma.$disconnect();
   } catch (e: any) {
-    return NextResponse.json({
-      type: "error",
-      message: `Something went wrong: ${e.message}`,
-      status: 400,
-    });
+    return NextResponse.json(
+      {
+        type: "error",
+        message: `Something went wrong: ${e.message}`,
+      },
+      {
+        status: 400,
+      }
+    );
   }
 
-  return NextResponse.json({
-    type: "success",
-    message: "Signed In Successfully",
-    status: 200,
-  });
+  return NextResponse.json(
+    {
+      type: "success",
+      message: "Signed In Successfully",
+    },
+    { status: 200 }
+  );
 }

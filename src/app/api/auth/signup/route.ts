@@ -10,11 +10,13 @@ export async function POST(Request: NextRequest) {
 
   const prisma = new PrismaClient();
   if (body.confirm !== body.password) {
-    return NextResponse.json({
-      type: "error",
-      message: "Passwords do not match",
-      status: 400,
-    });
+    return NextResponse.json(
+      {
+        type: "error",
+        message: "Passwords do not match",
+      },
+      { status: 400 }
+    );
   }
   try {
     const name = body.name;
@@ -46,16 +48,20 @@ export async function POST(Request: NextRequest) {
     cookies().set("user", JSON.stringify(localUser));
     await prisma.$disconnect();
   } catch (e: any) {
-    return NextResponse.json({
-      type: "error",
-      message: `Something went wrong: ${e.message}`,
-      status: 400,
-    });
+    return NextResponse.json(
+      {
+        type: "error",
+        message: `Something went wrong: ${e.message}`,
+      },
+      { status: 400 }
+    );
   }
   revalidatePath("/");
-  return NextResponse.json({
-    type: "success",
-    message: "User signed up successfully",
-    status: 200,
-  });
+  return NextResponse.json(
+    {
+      type: "success",
+      message: "User signed up successfully",
+    },
+    { status: 200 }
+  );
 }
