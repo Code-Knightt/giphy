@@ -26,18 +26,19 @@ export async function POST(Request: NextRequest) {
     const auth = getAuth(app);
     await createUserWithEmailAndPassword(auth, email, password);
 
-    const localUser = {
-      name: name,
-      email: email,
-      favorites: [],
-    };
-
     const user = await prisma.user.create({
       data: {
         email,
         name,
       },
     });
+
+    const localUser = {
+      id: user.id,
+      name: name,
+      email: email,
+      favorites: [],
+    };
 
     await prisma.login.create({
       data: {
