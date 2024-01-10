@@ -16,7 +16,7 @@ export async function POST(Request: NextRequest) {
     await prisma.search.create({
       data: {
         keyword: query,
-        timestamp: new Date(),
+        createdAt: new Date(),
       },
     });
   }
